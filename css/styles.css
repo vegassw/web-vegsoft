@@ -1,0 +1,23 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+#hero h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    transform: scale(1.1);
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+}
+
