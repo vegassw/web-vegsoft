@@ -84,7 +84,7 @@ const Hero = () => {
                   <div className="text-sm text-muted-foreground">{t.hero.stats.clients}</div>
                 </div>
                 <div className="text-center lg:text-left">
-                  <div className="font-heading font-bold text-3xl lg:text-4xl text-foreground">5+</div>
+                  <div className="font-heading font-bold text-3xl lg:text-4xl text-foreground">14+</div>
                   <div className="text-sm text-muted-foreground">{t.hero.stats.years}</div>
                 </div>
               </div>
