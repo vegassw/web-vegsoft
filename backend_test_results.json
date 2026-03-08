@@ -1,0 +1,44 @@
+{
+  "summary": {
+    "tests_run": 5,
+    "tests_passed": 5,
+    "success_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "API Root Endpoint",
+      "success": true,
+      "details": "Status: 200, Response: {'message': 'Vegsoft Solutions API'}",
+      "endpoint": "/api/",
+      "timestamp": "2026-03-08T05:00:26.746939"
+    },
+    {
+      "name": "Contact Form Submission",
+      "success": true,
+      "details": "Status: 200, Response: {'id': 'a849f8d5-fa39-4712-8a0a-973316b123ca', 'status': 'success', 'message': 'Mensaje recibido correctamente. Nos pondremos en contacto pronto.'}",
+      "endpoint": "/api/contact",
+      "timestamp": "2026-03-08T05:00:26.917715"
+    },
+    {
+      "name": "Appointment Creation",
+      "success": true,
+      "details": "Status: 200, Appointment ID: f5e370f6-8cb8-4db4-90ba-b142693ac958",
+      "endpoint": "/api/appointments",
+      "timestamp": "2026-03-08T05:00:27.071422"
+    },
+    {
+      "name": "Available Times Query",
+      "success": true,
+      "details": "Status: 200, Date: 2026-03-11, Available slots: 14",
+      "endpoint": "/api/appointments/available-times",
+      "timestamp": "2026-03-08T05:00:27.232116"
+    },
+    {
+      "name": "Contact Form Validation",
+      "success": true,
+      "details": "Status: 422 (expected 422 for invalid data)",
+      "endpoint": "/api/contact",
+      "timestamp": "2026-03-08T05:00:27.398247"
+    }
+  ]
+}
