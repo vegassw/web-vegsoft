@@ -51,9 +51,11 @@ const Header = () => {
               data-testid="logo-link"
               className="flex items-center gap-3 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-electric to-violet flex items-center justify-center transform group-hover:scale-105 transition-transform">
-                <span className="text-white font-heading font-bold text-lg">VS</span>
-              </div>
+              <img 
+                src="https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/pek4g6i5_IMG_5954.png"
+                alt="Vegsoft Solutions"
+                className="h-10 w-auto transform group-hover:scale-105 transition-transform"
+              />
               <div className="hidden sm:block">
                 <span className="font-heading font-bold text-lg text-foreground">Vegsoft</span>
                 <span className="font-heading font-medium text-lg text-electric ml-1">Solutions</span>

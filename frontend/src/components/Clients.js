@@ -15,10 +15,6 @@ const Clients = () => {
     {
       name: 'Imperial',
       logo: 'https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/548jxudi_IMG_5955.jpeg'
-    },
-    {
-      name: 'Vegsoft',
-      logo: 'https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/pek4g6i5_IMG_5954.png'
     }
   ];
 
@@ -44,7 +40,7 @@ const Clients = () => {
         </div>
 
         {/* Client Logos Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12 max-w-4xl mx-auto">
           {clients.map((client, index) => (
             <div
               key={index}
