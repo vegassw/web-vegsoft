@@ -1,0 +1,142 @@
+{
+  "identity": {
+    "name": "Vegsoft Solutions",
+    "tone": "Professional, Electric, Futuristic, Trustworthy, Capable",
+    "theme": "dark",
+    "archetype": "Electric & Neon (Modified for Consulting)",
+    "mission": "Transmit security, specialty, and technical capability for business digitalization."
+  },
+  "typography": {
+    "headings": {
+      "family": "Outfit",
+      "weights": ["400", "600", "700"],
+      "letterSpacing": "-0.02em",
+      "description": "Geometric, modern, and tech-forward without being aggressive."
+    },
+    "body": {
+      "family": "Manrope",
+      "weights": ["400", "500"],
+      "letterSpacing": "0em",
+      "description": "Clean, highly readable, works well for technical content."
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "weights": ["400"],
+      "description": "For code snippets and technical details."
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": "#030712",
+      "foreground": "#F9FAFB",
+      "card": "#111827",
+      "card_foreground": "#F9FAFB",
+      "popover": "#030712",
+      "popover_foreground": "#F9FAFB",
+      "primary": "#00DC82",
+      "primary_foreground": "#020420",
+      "secondary": "#7C3AED",
+      "secondary_foreground": "#FFFFFF",
+      "muted": "#1F2937",
+      "muted_foreground": "#9CA3AF",
+      "accent": "#1F2937",
+      "accent_foreground": "#F9FAFB",
+      "destructive": "#7F1D1D",
+      "destructive_foreground": "#F9FAFB",
+      "border": "#1F2937",
+      "input": "#1F2937",
+      "ring": "#00DC82"
+    },
+    "gradients": {
+      "hero_glow": "radial-gradient(circle at 50% 50%, rgba(0, 220, 130, 0.15), rgba(0, 0, 0, 0))",
+      "card_border": "linear-gradient(45deg, transparent, rgba(0, 220, 130, 0.3), transparent)"
+    }
+  },
+  "layout_strategies": {
+    "spacing": {
+      "base": "1rem",
+      "container_padding": "p-6 md:p-12 lg:p-24",
+      "section_gap": "gap-12 md:gap-24"
+    },
+    "grid_system": {
+      "services_bento": {
+        "description": "Asymmetric grid for services. Mix of 1x1, 2x1, and 2x2 cards.",
+        "classes": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      },
+      "hero_layout": {
+        "description": "Split screen: Typography on left (60%), 3D/Abstract Visual on right (40%).",
+        "classes": "flex flex-col lg:flex-row items-center justify-between"
+      }
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-3 font-semibold transition-all hover:scale-105 shadow-[0_0_20px_rgba(0,220,130,0.3)]",
+      "secondary": "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground rounded-full px-8 py-3 transition-all"
+    },
+    "cards": {
+      "service_card": "group relative overflow-hidden rounded-xl border border-border/50 bg-card/50 p-6 hover:border-primary/50 transition-colors duration-300",
+      "glass_panel": "backdrop-blur-xl bg-black/40 border border-white/10 rounded-2xl shadow-2xl"
+    },
+    "inputs": {
+      "default": "bg-gray-900/50 border-gray-800 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg"
+    },
+    "navigation": {
+      "header": "fixed top-0 w-full z-50 backdrop-blur-md border-b border-white/5 bg-background/80",
+      "nav_link": "text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+    }
+  },
+  "visual_enhancers": {
+    "radius": "rounded-xl",
+    "shadows": {
+      "glow": "shadow-[0_0_40px_-10px_rgba(0,220,130,0.3)]"
+    },
+    "effects": {
+      "noise": "url('/noise.png') opacity-5",
+      "glass": "backdrop-blur-md bg-opacity-80"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1767727239153-8bf7f6be90e6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMHRlY2hub2xvZ3klMjBwYXJ0aWNsZXMlMjBkYXJrJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzI5NDU2MjV8MA&ixlib=rb-4.1.0&q=85",
+      "services_web": "https://images.unsplash.com/photo-1684127987312-43455fd95925?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzV8MHwxfHNlYXJjaHwyfHxzb2Z0d2FyZSUyMGRldmVsb3BlciUyMHdyaXRpbmclMjBjb2RlJTIwb24lMjBsYXB0b3AlMjBkYXJrJTIwbW9kZXxlbnwwfHx8fDE3NzI5NDU2MjZ8MA&ixlib=rb-4.1.0&q=85",
+      "services_mobile": "https://images.unsplash.com/photo-1502201563651-826cbb30c3dd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwzfHxtb2JpbGUlMjBhcHAlMjBkZXZlbG9wbWVudCUyMHVpJTIwb24lMjBwaG9uZXxlbnwwfHx8fDE3NzI5NDU2Mjd8MA&ixlib=rb-4.1.0&q=85",
+      "services_ai": "https://images.pexels.com/photos/17485657/pexels-photo-17485657.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "team_meeting": "https://images.unsplash.com/photo-1758873271761-6cfe9b4f000c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBjb3Jwb3JhdGUlMjB0ZWFtJTIwbWVldGluZyUyMGRpdmVyc2V8ZW58MHx8fHwxNzcyOTQ1NjI4fDA&ixlib=rb-4.1.0&q=85"
+    },
+    "logos": {
+      "sf_ingenieria": "https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/wvw7cbvj_IMG_5952.png",
+      "voycargo": "https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/288sy5ct_IMG_5953.png",
+      "imperial": "https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/548jxudi_IMG_5955.jpeg",
+      "vegsoft": "https://customer-assets.emergentagent.com/job_fbf5852c-f54f-4908-865d-ec707046f10b/artifacts/pek4g6i5_IMG_5954.png"
+    }
+  },
+  "content_strategy": {
+    "voice": "Authoritative yet accessible. Focus on 'Transformation' and 'Efficiency'.",
+    "cta_text": "Agendar Asesoría Gratuita",
+    "headlines": {
+      "hero": "Transformamos tu negocio con Software e IA",
+      "services": "Soluciones Tecnológicas de Alto Impacto",
+      "contact": "Hablemos de tu próximo gran proyecto"
+    }
+  },
+  "universal_guidelines": [
+    "Use deep blacks (#030712) instead of pure black for backgrounds to reduce eye strain and increase richness.",
+    "Interactive elements MUST have a hover state that brightens or glows.",
+    "Use 'Outfit' font for all headings to maintain brand character.",
+    "Do NOT use gradients on text unless it's a very large headline.",
+    "Always add 'data-testid' to interactive elements.",
+    "Use 2x more padding than you think is necessary.",
+    "Ensure the Language Selector is visible in the Header.",
+    "WhatsApp button must be floating fixed at bottom-right."
+  ],
+  "instructions_to_main_agent": [
+    "Implement the 'Outfit' and 'Manrope' fonts using Google Fonts or similar.",
+    "Set up the Tailwind config with the specified colors and border radius.",
+    "Create the Hero section with the 'Electric' abstract background image.",
+    "Build the Services section using a Bento Grid layout.",
+    "Implement the Contact form with email sending capability.",
+    "Ensure the client logos are displayed in a clean, grayscale-to-color hover carousel.",
+    "Use the 'sonner' library for toast notifications."
+  ]
+}
