@@ -75,8 +75,8 @@ const Contact = () => {
       >
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-t from-muted/30 via-transparent to-transparent" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-electric/10 rounded-full blur-[150px]" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-0 left-0 w-64 md:w-96 h-64 md:h-96 bg-electric/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-violet/10 rounded-full blur-[150px]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}

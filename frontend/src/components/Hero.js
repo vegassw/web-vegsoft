@@ -27,8 +27,8 @@ const Hero = () => {
         <div className="absolute inset-0 noise-overlay" />
         
         {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-electric/20 rounded-full blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-violet/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '3s' }} />
+        <div className="absolute top-1/4 left-0 w-64 md:w-96 h-64 md:h-96 bg-electric/20 rounded-full blur-[120px] animate-float" />
+        <div className="absolute bottom-1/4 right-0 w-64 md:w-96 h-64 md:h-96 bg-violet/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '3s' }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
