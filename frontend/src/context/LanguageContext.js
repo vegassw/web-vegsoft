@@ -46,13 +46,37 @@ const translations = {
         title: 'IA & Automatización',
         description: 'Integración de inteligencia artificial para optimizar procesos empresariales.'
       },
-      workflows: {
-        title: 'Flujos de Trabajo',
-        description: 'Optimización y automatización de procesos para mayor eficiencia operativa.'
+      software: {
+        title: 'Desarrollo de Software',
+        description: 'Software a medida, sistemas empresariales, ERPs y CRMs personalizados.'
       },
       consulting: {
         title: 'Consultoría Tech',
         description: 'Asesoramiento estratégico para la transformación digital de tu empresa.'
+      },
+      qa: {
+        title: 'QA & Testing',
+        description: 'Pruebas de calidad, testing automatizado y aseguramiento de software.'
+      },
+      devops: {
+        title: 'DevOps & Cloud',
+        description: 'Infraestructura cloud, CI/CD, contenedores y despliegue continuo.'
+      },
+      uxui: {
+        title: 'Diseño UX/UI',
+        description: 'Interfaces intuitivas y experiencias de usuario centradas en conversión.'
+      },
+      data: {
+        title: 'Data & Analytics',
+        description: 'Business Intelligence, dashboards y análisis de datos para decisiones.'
+      },
+      security: {
+        title: 'Ciberseguridad',
+        description: 'Auditorías de seguridad, pentesting y protección de datos.'
+      },
+      support: {
+        title: 'Soporte & Mantenimiento',
+        description: 'Soporte técnico 24/7, mantenimiento preventivo y actualizaciones.'
       }
     },
     // Clients
@@ -148,8 +172,14 @@ const translations = {
         mobile: 'Apps Móviles',
         ecommerce: 'E-commerce',
         ai: 'IA & Automatización',
-        workflows: 'Flujos de Trabajo',
-        consulting: 'Consultoría'
+        software: 'Desarrollo de Software',
+        consulting: 'Consultoría Tech',
+        qa: 'QA & Testing',
+        devops: 'DevOps & Cloud',
+        uxui: 'Diseño UX/UI',
+        data: 'Data & Analytics',
+        security: 'Ciberseguridad',
+        support: 'Soporte & Mantenimiento'
       }
     }
   },
@@ -198,13 +228,37 @@ const translations = {
         title: 'AI & Automation',
         description: 'Artificial intelligence integration to optimize business processes.'
       },
-      workflows: {
-        title: 'Workflows',
-        description: 'Process optimization and automation for greater operational efficiency.'
+      software: {
+        title: 'Software Development',
+        description: 'Custom software, enterprise systems, ERPs and personalized CRMs.'
       },
       consulting: {
         title: 'Tech Consulting',
         description: 'Strategic advice for the digital transformation of your company.'
+      },
+      qa: {
+        title: 'QA & Testing',
+        description: 'Quality assurance, automated testing and software validation.'
+      },
+      devops: {
+        title: 'DevOps & Cloud',
+        description: 'Cloud infrastructure, CI/CD, containers and continuous deployment.'
+      },
+      uxui: {
+        title: 'UX/UI Design',
+        description: 'Intuitive interfaces and conversion-focused user experiences.'
+      },
+      data: {
+        title: 'Data & Analytics',
+        description: 'Business Intelligence, dashboards and data analysis for decisions.'
+      },
+      security: {
+        title: 'Cybersecurity',
+        description: 'Security audits, pentesting and data protection.'
+      },
+      support: {
+        title: 'Support & Maintenance',
+        description: '24/7 technical support, preventive maintenance and updates.'
       }
     },
     // Clients
@@ -300,8 +354,14 @@ const translations = {
         mobile: 'Mobile Apps',
         ecommerce: 'E-commerce',
         ai: 'AI & Automation',
-        workflows: 'Workflows',
-        consulting: 'Consulting'
+        software: 'Software Development',
+        consulting: 'Tech Consulting',
+        qa: 'QA & Testing',
+        devops: 'DevOps & Cloud',
+        uxui: 'UX/UI Design',
+        data: 'Data & Analytics',
+        security: 'Cybersecurity',
+        support: 'Support & Maintenance'
       }
     }
   }
