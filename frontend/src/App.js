@@ -7,7 +7,7 @@ import Hero from "./components/Hero";
 import Services from "./components/Services";
 import WhyUs from "./components/WhyUs";
 import TechStack from "./components/TechStack";
-import Testimonials from "./components/Testimonials";
+import Clients from "./components/Clients";
 import Process from "./components/Process";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
@@ -24,7 +24,7 @@ function App() {
             <Services />
             <WhyUs />
             <TechStack />
-            <Testimonials />
+            <Clients />
             <Process />
             <Contact />
           </main>

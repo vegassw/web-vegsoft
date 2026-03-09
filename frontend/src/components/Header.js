@@ -29,7 +29,7 @@ const Header = () => {
   const navItems = [
     { id: 'services', label: t.nav.services },
     { id: 'why-us', label: language === 'es' ? 'Nosotros' : 'About Us' },
-    { id: 'testimonials', label: language === 'es' ? 'Testimonios' : 'Testimonials' },
+    { id: 'clients', label: language === 'es' ? 'Clientes' : 'Clients' },
     { id: 'process', label: t.nav.process },
     { id: 'contact', label: t.nav.contact },
   ];
