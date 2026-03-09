@@ -28,7 +28,8 @@ const Header = () => {
 
   const navItems = [
     { id: 'services', label: t.nav.services },
-    { id: 'clients', label: t.nav.clients },
+    { id: 'why-us', label: language === 'es' ? 'Nosotros' : 'About Us' },
+    { id: 'testimonials', label: language === 'es' ? 'Testimonios' : 'Testimonials' },
     { id: 'process', label: t.nav.process },
     { id: 'contact', label: t.nav.contact },
   ];
