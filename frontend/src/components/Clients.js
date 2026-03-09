@@ -56,28 +56,7 @@ const Clients = () => {
           ))}
         </div>
 
-        {/* Testimonial teaser */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-4 px-6 py-4 rounded-2xl glass border border-border/50">
-            <div className="flex -space-x-3">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full bg-gradient-to-br from-electric to-violet flex items-center justify-center border-2 border-background"
-                >
-                  <span className="text-xs font-bold text-white">
-                    {['DV', 'MC', 'JL'][i - 1]}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="text-left">
-              <div className="text-sm font-semibold text-foreground">+30 empresas satisfechas</div>
-              <div className="text-xs text-muted-foreground">en Chile y Latinoamérica</div>
-            </div>
-          </div>
-        </div>
-      </div>
+</div>
     </section>
   );
 };
