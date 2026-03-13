@@ -35,7 +35,7 @@ steps:
       - '--service-account'
       - 'vegsoft-backend-emergent@vegsoft-solutions-prod.iam.gserviceaccount.com'
       - '--set-env-vars'
-      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,CALENDAR_ID=Douglas.vegas@vegsoftsolutions.com,FRONTEND_URL=${_BACKEND_URL}'
+      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,CALENDAR_ID=c_01b41f98727a6c0471d08505dcf0cc11ec00229b2a2478f97e8b79c1f457a1e0@group.calendar.google.com,FRONTEND_URL=${_BACKEND_URL}'
 
 substitutions:
   _BACKEND_URL: 'https://vegsoft-solutions-prod.run.app'
