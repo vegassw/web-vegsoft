@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from google.cloud import firestore
 from googleapiclient.discovery import build
-import google.auth.default
+import google.auth
 import os
 import logging
 from pathlib import Path
