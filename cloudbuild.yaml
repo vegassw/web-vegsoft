@@ -33,13 +33,10 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID},GOOGLE_CLIENT_SECRET=${_GOOGLE_CLIENT_SECRET},BACKEND_URL=${_BACKEND_URL},FRONTEND_URL=${_FRONTEND_URL}'
+      - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,BACKEND_URL=${_BACKEND_URL},FRONTEND_URL=${_BACKEND_URL}'
 
 substitutions:
-  _BACKEND_URL: 'https://vegsoft-solutions-xxxxxxxx-uc.a.run.app'
-  _FRONTEND_URL: 'https://vegsoft-solutions-xxxxxxxx-uc.a.run.app'
-  _GOOGLE_CLIENT_ID: '307650209341-kvouf5s47s16po759u0d70sc5lntmcee.apps.googleusercontent.com'
-  _GOOGLE_CLIENT_SECRET: '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'
+  _BACKEND_URL: 'https://vegsoft-solutions-prod.run.app'
 
 images:
   - 'gcr.io/$PROJECT_ID/vegsoft-solutions:$COMMIT_SHA'
