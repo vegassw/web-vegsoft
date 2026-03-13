@@ -67,16 +67,23 @@ const CalendarModal = ({ isOpen, onClose }) => {
     setIsLoading(true);
 
     try {
-      await axios.post(`${API}/appointments`, {
+      const response = await axios.post(`${API}/appointments`, {
         ...formData,
         date: format(selectedDate, 'yyyy-MM-dd'),
         time: selectedTime
       });
+      
       setIsSuccess(true);
       toast.success(t.calendar.form.success);
+      
+      // Log the WhatsApp URL for debugging (the business owner can see appointments in Firestore)
+      if (response.data.whatsapp_notification_url) {
+        console.log('Appointment created with WhatsApp notification URL:', response.data.whatsapp_notification_url);
+      }
+      
       setTimeout(() => {
         handleClose();
-      }, 2000);
+      }, 3000);
     } catch (error) {
       console.error('Appointment error:', error);
       toast.error(t.calendar.form.error);

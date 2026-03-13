@@ -8,6 +8,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 import uuid
 from datetime import datetime, timezone, timedelta
+import urllib.parse
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -24,6 +25,7 @@ PROJECT_ID = os.environ.get('GOOGLE_CLOUD_PROJECT', 'vegsoft-solutions-prod')
 CALENDAR_ID = os.environ.get('CALENDAR_ID', 'primary')
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://vegsoft-solutions-307650209341.us-central1.run.app')
 CONTACT_EMAIL = "Douglas.vegas@vegsoftsolutions.com"
+WHATSAPP_NUMBER = "56947127116"
 
 # Lazy initialization for Firestore
 _db = None
@@ -55,6 +57,25 @@ def get_calendar_service():
     except Exception as e:
         logger.error(f"Failed to initialize Calendar service: {str(e)}")
         return None
+
+
+def generate_whatsapp_notification_url(appointment: dict) -> str:
+    """Generate a WhatsApp click-to-chat URL with appointment details"""
+    message = f"""🗓️ *NUEVA CITA AGENDADA*
+
+👤 *Cliente:* {appointment['name']}
+📧 *Email:* {appointment['email']}
+📱 *Teléfono:* {appointment['phone']}
+🏢 *Empresa:* {appointment.get('company') or 'No especificada'}
+📅 *Fecha:* {appointment['date']}
+⏰ *Hora:* {appointment['time']}
+💼 *Servicio:* {appointment['service']}
+📝 *Notas:* {appointment.get('notes') or 'Sin notas'}
+
+_Cita registrada automáticamente desde el sitio web_"""
+    
+    encoded_message = urllib.parse.quote(message)
+    return f"https://wa.me/{WHATSAPP_NUMBER}?text={encoded_message}"
 # Create the main app
 app = FastAPI()
 
@@ -98,6 +119,7 @@ class AppointmentResponse(BaseModel):
     notes: Optional[str]
     created_at: str
     calendar_event_id: Optional[str] = None
+    whatsapp_notification_url: Optional[str] = None
 
 
 async def create_calendar_event(appointment: dict) -> Optional[str]:
@@ -240,6 +262,10 @@ async def create_appointment(appointment: AppointmentCreate):
     except Exception as e:
         logger.error(f"Calendar event creation failed: {str(e)}")
     
+    # Generate WhatsApp notification URL
+    whatsapp_url = generate_whatsapp_notification_url(apt_data)
+    apt_data["whatsapp_notification_url"] = whatsapp_url
+    
     # Save to Firestore
     try:
         db = get_db()
@@ -260,7 +286,8 @@ async def create_appointment(appointment: AppointmentCreate):
         service=appointment.service,
         notes=appointment.notes,
         created_at=created_at,
-        calendar_event_id=calendar_event_id
+        calendar_event_id=calendar_event_id,
+        whatsapp_notification_url=whatsapp_url
     )
 
 
@@ -286,6 +313,38 @@ async def get_available_times(date: str):
     # Return available times
     available = [t for t in all_times if t not in booked_times]
     return {"date": date, "available_times": available}
+
+
+@api_router.get("/admin/appointments")
+async def get_all_appointments():
+    """Get all appointments (admin endpoint)"""
+    try:
+        db = get_db()
+        appointments = db.collection('appointments').order_by('created_at', direction='DESCENDING').limit(50).stream()
+        result = []
+        for apt in appointments:
+            data = apt.to_dict()
+            result.append(data)
+        return {"appointments": result, "count": len(result)}
+    except Exception as e:
+        logger.error(f"Failed to get appointments: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al obtener citas")
+
+
+@api_router.get("/admin/contacts")
+async def get_all_contacts():
+    """Get all contact messages (admin endpoint)"""
+    try:
+        db = get_db()
+        contacts = db.collection('contacts').order_by('created_at', direction='DESCENDING').limit(50).stream()
+        result = []
+        for contact in contacts:
+            data = contact.to_dict()
+            result.append(data)
+        return {"contacts": result, "count": len(result)}
+    except Exception as e:
+        logger.error(f"Failed to get contacts: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al obtener mensajes")
 
 
 # Include the router in the main app
