@@ -11,6 +11,13 @@ venv/
 .env.*.local
 backend/.env
 frontend/.env
+*.env
+*.env.*
+
+# Credentials - NEVER commit these
+*credentials*.json
+*-key.json
+*service-account*.json
 
 # Build outputs
 frontend/build/
@@ -42,40 +49,4 @@ temp/
 
 # Memory/docs (emergent specific)
 memory/
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
 frontend/node_modules/.cache/default-development/0.pack
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*

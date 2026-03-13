@@ -32,6 +32,8 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--service-account'
+      - 'vegsoft-backend-emergent@vegsoft-solutions-prod.iam.gserviceaccount.com'
       - '--set-env-vars'
       - 'GOOGLE_CLOUD_PROJECT=$PROJECT_ID,BACKEND_URL=${_BACKEND_URL},FRONTEND_URL=${_BACKEND_URL}'
 
