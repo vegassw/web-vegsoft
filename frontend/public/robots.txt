@@ -1,0 +1,12 @@
+# Robots.txt para Vegsoft Solutions
+# https://vegsoftsolutions.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://vegsoftsolutions.com/sitemap.xml
+
+# Bloquear rutas internas
+Disallow: /api/
+Disallow: /admin/
