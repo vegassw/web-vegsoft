@@ -145,6 +145,8 @@ Teléfono: {appointment['phone']}
 Empresa: {appointment.get('company', 'No especificada')}
 Servicio: {appointment['service']}
 Notas: {appointment.get('notes', 'Sin notas')}
+
+📹 Para agregar videoconferencia, edita este evento y haz clic en "Agregar videoconferencia de Google Meet"
             """.strip(),
             'start': {
                 'dateTime': start_dt.isoformat(),
@@ -153,12 +155,6 @@ Notas: {appointment.get('notes', 'Sin notas')}
             'end': {
                 'dateTime': end_dt.isoformat(),
                 'timeZone': 'America/Santiago',
-            },
-            'conferenceData': {
-                'createRequest': {
-                    'requestId': f"vegsoft-{appointment.get('id', 'meet')}",
-                    'conferenceSolutionKey': {'type': 'hangoutsMeet'}
-                }
             },
             'reminders': {
                 'useDefault': False,
@@ -169,13 +165,10 @@ Notas: {appointment.get('notes', 'Sin notas')}
             },
         }
         
-        # Use CALENDAR_ID - this should be the email of the calendar owner
-        # who has shared their calendar with the service account
-        # conferenceDataVersion=1 enables Google Meet creation
+        # Create event without conference data (service account can't create Meet links)
         created_event = service.events().insert(
             calendarId=CALENDAR_ID, 
-            body=event,
-            conferenceDataVersion=1
+            body=event
         ).execute()
         logger.info(f"Calendar event created: {created_event.get('id')}")
         return created_event.get('id')
