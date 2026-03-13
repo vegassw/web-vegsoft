@@ -28,37 +28,50 @@ COPY backend/ ./backend/
 # Copy frontend build
 COPY --from=frontend-build /app/frontend/build ./frontend/build
 
-# Nginx configuration
+# Nginx configuration for Cloud Run (port 8080)
 RUN echo 'server { \
     listen 8080; \
+    root /app/frontend/build; \
+    index index.html; \
+    \
     location / { \
-        root /app/frontend/build; \
-        index index.html; \
         try_files $uri $uri/ /index.html; \
     } \
+    \
     location /api { \
         proxy_pass http://127.0.0.1:8001; \
+        proxy_http_version 1.1; \
         proxy_set_header Host $host; \
         proxy_set_header X-Real-IP $remote_addr; \
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
+        proxy_set_header X-Forwarded-Proto $scheme; \
     } \
 }' > /etc/nginx/sites-available/default
 
 # Supervisor configuration
-RUN echo '[supervisord] \n\
-nodaemon=true \n\
+RUN mkdir -p /var/log/supervisor && \
+    echo '[supervisord]\n\
+nodaemon=true\n\
+logfile=/var/log/supervisor/supervisord.log\n\
 \n\
-[program:nginx] \n\
-command=/usr/sbin/nginx -g "daemon off;" \n\
-autostart=true \n\
-autorestart=true \n\
+[program:nginx]\n\
+command=/usr/sbin/nginx -g "daemon off;"\n\
+autostart=true\n\
+autorestart=true\n\
+stdout_logfile=/var/log/supervisor/nginx.log\n\
+stderr_logfile=/var/log/supervisor/nginx_err.log\n\
 \n\
-[program:backend] \n\
-command=uvicorn backend.server:app --host 0.0.0.0 --port 8001 \n\
-directory=/app \n\
-autostart=true \n\
-autorestart=true \n\
+[program:backend]\n\
+command=python -m uvicorn backend.server:app --host 0.0.0.0 --port 8001\n\
+directory=/app\n\
+autostart=true\n\
+autorestart=true\n\
+stdout_logfile=/var/log/supervisor/backend.log\n\
+stderr_logfile=/var/log/supervisor/backend_err.log\n\
 ' > /etc/supervisor/conf.d/app.conf
 
+# Cloud Run uses PORT env variable (default 8080)
+ENV PORT=8080
 EXPOSE 8080
 
 CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
