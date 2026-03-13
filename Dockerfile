@@ -25,6 +25,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY backend/ ./backend/
 
+# Set up Google Cloud credentials
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/backend/vegsoft-credentials.json
+
 # Copy frontend build
 COPY --from=frontend-build /app/frontend/build ./frontend/build
 

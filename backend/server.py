@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from google.cloud import firestore
+from google.oauth2 import service_account
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request as GoogleRequest
 from googleapiclient.discovery import build
@@ -18,9 +19,17 @@ from datetime import datetime, timezone, timedelta
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Firestore connection
+# Firestore connection with explicit credentials
 PROJECT_ID = os.environ.get('GOOGLE_CLOUD_PROJECT', 'vegsoft-solutions-prod')
-db = firestore.Client(project=PROJECT_ID, database='vegsoft-site')
+CREDENTIALS_PATH = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+
+# Initialize Firestore with service account credentials
+if CREDENTIALS_PATH and Path(CREDENTIALS_PATH).exists():
+    credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
+    db = firestore.Client(project=PROJECT_ID, database='vegsoft-site', credentials=credentials)
+else:
+    # Fallback for local development or default credentials
+    db = firestore.Client(project=PROJECT_ID, database='vegsoft-site')
 
 # Google OAuth configuration
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
