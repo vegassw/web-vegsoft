@@ -42,3 +42,7 @@ temp/
 
 # Memory/docs (emergent specific)
 memory/
+-e 
+# Environment files
+*.env
+*.env.*
