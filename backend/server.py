@@ -1,16 +1,13 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request
-from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from google.cloud import firestore
-from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import google.auth.default
 import os
 import logging
-import requests
 from pathlib import Path
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 import uuid
 from datetime import datetime, timezone, timedelta
