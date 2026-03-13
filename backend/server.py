@@ -3,9 +3,9 @@ from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from google.cloud import firestore
-from google.oauth2.credentials import Credentials
-from google.auth.transport.requests import Request as GoogleRequest
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
+import google.auth.default
 import os
 import logging
 import requests
@@ -23,12 +23,10 @@ load_dotenv(ROOT_DIR / '.env')
 PROJECT_ID = os.environ.get('GOOGLE_CLOUD_PROJECT', 'vegsoft-solutions-prod')
 db = firestore.Client(project=PROJECT_ID, database='vegsoft-site')
 
-# Google OAuth configuration
-GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
-GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://vegsoft-solutions-prod.web.app')
-BACKEND_URL = os.environ.get('BACKEND_URL', '')
-REDIRECT_URI = f"{BACKEND_URL}/api/oauth/calendar/callback" if BACKEND_URL else ''
+# Calendar configuration - uses service account
+# The calendar owner must share their calendar with the service account email
+CALENDAR_ID = os.environ.get('CALENDAR_ID', 'primary')  # Can be set to specific calendar email
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://vegsoft-solutions-prod.run.app')
 
 # Contact email
 CONTACT_EMAIL = "Douglas.vegas@vegsoftsolutions.com"
@@ -85,46 +83,28 @@ class AppointmentResponse(BaseModel):
     calendar_event_id: Optional[str] = None
 
 
-# Helper function to get Google Calendar credentials
-async def get_calendar_credentials():
-    """Get stored Google Calendar credentials for the business owner"""
-    doc = db.collection('settings').document('google_calendar').get()
-    if not doc.exists:
+# Helper function to get Google Calendar service using service account
+def get_calendar_service():
+    """Get Google Calendar service using Application Default Credentials (service account)"""
+    try:
+        # Use ADC - in Cloud Run this automatically uses the assigned service account
+        credentials, project = google.auth.default(
+            scopes=['https://www.googleapis.com/auth/calendar']
+        )
+        service = build('calendar', 'v3', credentials=credentials)
+        return service
+    except Exception as e:
+        logger.error(f"Failed to initialize Calendar service: {str(e)}")
         return None
-    
-    data = doc.to_dict()
-    tokens = data.get('tokens')
-    if not tokens:
-        return None
-    
-    creds = Credentials(
-        token=tokens.get('access_token'),
-        refresh_token=tokens.get('refresh_token'),
-        token_uri='https://oauth2.googleapis.com/token',
-        client_id=GOOGLE_CLIENT_ID,
-        client_secret=GOOGLE_CLIENT_SECRET
-    )
-    
-    # Refresh if expired
-    if creds.expired and creds.refresh_token:
-        creds.refresh(GoogleRequest())
-        # Update stored tokens
-        db.collection('settings').document('google_calendar').update({
-            'tokens.access_token': creds.token
-        })
-    
-    return creds
 
 
 async def create_calendar_event(appointment: dict) -> Optional[str]:
-    """Create a Google Calendar event for the appointment"""
+    """Create a Google Calendar event for the appointment using service account"""
     try:
-        creds = await get_calendar_credentials()
-        if not creds:
-            logger.warning("No Google Calendar credentials configured")
+        service = get_calendar_service()
+        if not service:
+            logger.warning("Could not initialize Google Calendar service")
             return None
-        
-        service = build('calendar', 'v3', credentials=creds)
         
         # Parse date and time
         date_str = appointment['date']
@@ -159,7 +139,9 @@ Notas: {appointment.get('notes', 'Sin notas')}
             },
         }
         
-        created_event = service.events().insert(calendarId='primary', body=event).execute()
+        # Use CALENDAR_ID - this should be the email of the calendar owner
+        # who has shared their calendar with the service account
+        created_event = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
         logger.info(f"Calendar event created: {created_event.get('id')}")
         return created_event.get('id')
     
@@ -179,89 +161,18 @@ async def health():
     return {"status": "healthy", "database": "firestore"}
 
 
-# Google Calendar OAuth Routes
-@api_router.get("/oauth/calendar/login")
-async def calendar_oauth_login():
-    """Start OAuth flow to connect Google Calendar"""
-    if not GOOGLE_CLIENT_ID or not REDIRECT_URI:
-        raise HTTPException(status_code=500, detail="OAuth not configured")
-    
-    scopes = [
-        'https://www.googleapis.com/auth/calendar',
-        'https://www.googleapis.com/auth/userinfo.email'
-    ]
-    
-    auth_url = (
-        f"https://accounts.google.com/o/oauth2/v2/auth?"
-        f"client_id={GOOGLE_CLIENT_ID}&"
-        f"redirect_uri={REDIRECT_URI}&"
-        f"response_type=code&"
-        f"scope={' '.join(scopes)}&"
-        f"access_type=offline&"
-        f"prompt=consent"
-    )
-    
-    return {"authorization_url": auth_url}
-
-
-@api_router.get("/oauth/calendar/callback")
-async def calendar_oauth_callback(code: str):
-    """Handle OAuth callback and store tokens"""
-    try:
-        # Exchange code for tokens
-        token_response = requests.post(
-            'https://oauth2.googleapis.com/token',
-            data={
-                'code': code,
-                'client_id': GOOGLE_CLIENT_ID,
-                'client_secret': GOOGLE_CLIENT_SECRET,
-                'redirect_uri': REDIRECT_URI,
-                'grant_type': 'authorization_code'
-            }
-        ).json()
-        
-        if 'error' in token_response:
-            raise HTTPException(status_code=400, detail=token_response['error_description'])
-        
-        # Get user email
-        user_info = requests.get(
-            'https://www.googleapis.com/oauth2/v2/userinfo',
-            headers={'Authorization': f"Bearer {token_response['access_token']}"}
-        ).json()
-        
-        # Store tokens in Firestore
-        db.collection('settings').document('google_calendar').set({
-            'tokens': {
-                'access_token': token_response['access_token'],
-                'refresh_token': token_response.get('refresh_token'),
-                'token_uri': 'https://oauth2.googleapis.com/token',
-            },
-            'email': user_info.get('email'),
-            'connected_at': datetime.now(timezone.utc).isoformat()
-        })
-        
-        logger.info(f"Google Calendar connected for: {user_info.get('email')}")
-        
-        # Redirect to frontend with success
-        return RedirectResponse(url=f"{FRONTEND_URL}?calendar_connected=true")
-    
-    except Exception as e:
-        logger.error(f"OAuth callback error: {str(e)}")
-        return RedirectResponse(url=f"{FRONTEND_URL}?calendar_error=true")
-
-
-@api_router.get("/oauth/calendar/status")
+# Calendar status endpoint (simplified - no OAuth needed)
+@api_router.get("/calendar/status")
 async def calendar_status():
-    """Check if Google Calendar is connected"""
-    doc = db.collection('settings').document('google_calendar').get()
-    if doc.exists:
-        data = doc.to_dict()
+    """Check if Google Calendar integration is configured"""
+    service = get_calendar_service()
+    if service:
         return {
-            "connected": True,
-            "email": data.get('email'),
-            "connected_at": data.get('connected_at')
+            "configured": True,
+            "message": "Calendar integration is active via service account",
+            "calendar_id": CALENDAR_ID
         }
-    return {"connected": False}
+    return {"configured": False, "message": "Calendar service not available"}
 
 
 @api_router.post("/contact", response_model=ContactResponse)
