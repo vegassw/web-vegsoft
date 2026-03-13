@@ -134,7 +134,7 @@ async def create_calendar_event(appointment: dict) -> Optional[str]:
         date_str = appointment['date']
         time_str = appointment['time']
         start_dt = datetime.fromisoformat(f"{date_str}T{time_str}:00")
-        end_dt = start_dt + timedelta(hours=1)
+        end_dt = start_dt + timedelta(minutes=30)  # 30 minutes duration
         
         event = {
             'summary': f"Cita: {appointment['name']} - {appointment['service']}",
@@ -154,18 +154,29 @@ Notas: {appointment.get('notes', 'Sin notas')}
                 'dateTime': end_dt.isoformat(),
                 'timeZone': 'America/Santiago',
             },
+            'conferenceData': {
+                'createRequest': {
+                    'requestId': f"vegsoft-{appointment.get('id', 'meet')}",
+                    'conferenceSolutionKey': {'type': 'hangoutsMeet'}
+                }
+            },
             'reminders': {
                 'useDefault': False,
                 'overrides': [
                     {'method': 'email', 'minutes': 24 * 60},
-                    {'method': 'popup', 'minutes': 30},
+                    {'method': 'popup', 'minutes': 10},
                 ],
             },
         }
         
         # Use CALENDAR_ID - this should be the email of the calendar owner
         # who has shared their calendar with the service account
-        created_event = service.events().insert(calendarId=CALENDAR_ID, body=event).execute()
+        # conferenceDataVersion=1 enables Google Meet creation
+        created_event = service.events().insert(
+            calendarId=CALENDAR_ID, 
+            body=event,
+            conferenceDataVersion=1
+        ).execute()
         logger.info(f"Calendar event created: {created_event.get('id')}")
         return created_event.get('id')
     
