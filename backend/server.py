@@ -1,9 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from google.cloud import firestore
-from googleapiclient.discovery import build
-import google.auth
 import os
 import logging
 from pathlib import Path
@@ -15,32 +12,54 @@ from datetime import datetime, timezone, timedelta
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Firestore connection - uses Application Default Credentials (ADC)
-# In Cloud Run, ADC automatically uses the service account assigned to the service
-# Last updated: 2026-03-13
-PROJECT_ID = os.environ.get('GOOGLE_CLOUD_PROJECT', 'vegsoft-solutions-prod')
-db = firestore.Client(project=PROJECT_ID, database='vegsoft-site')
-
-# Calendar configuration - uses service account
-# The calendar owner must share their calendar with the service account email
-CALENDAR_ID = os.environ.get('CALENDAR_ID', 'primary')  # Can be set to specific calendar email
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://vegsoft-solutions-prod.run.app')
-
-# Contact email
-CONTACT_EMAIL = "Douglas.vegas@vegsoftsolutions.com"
-
-# Create the main app
-app = FastAPI()
-
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
-
-# Configure logging
+# Configure logging first
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Environment variables
+PROJECT_ID = os.environ.get('GOOGLE_CLOUD_PROJECT', 'vegsoft-solutions-prod')
+CALENDAR_ID = os.environ.get('CALENDAR_ID', 'primary')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://vegsoft-solutions-307650209341.us-central1.run.app')
+CONTACT_EMAIL = "Douglas.vegas@vegsoftsolutions.com"
+
+# Lazy initialization for Firestore
+_db = None
+
+def get_db():
+    """Lazy initialization of Firestore client"""
+    global _db
+    if _db is None:
+        try:
+            from google.cloud import firestore
+            _db = firestore.Client(project=PROJECT_ID, database='vegsoft-site')
+            logger.info("Firestore client initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize Firestore: {str(e)}")
+            raise
+    return _db
+
+# Lazy initialization for Calendar service
+def get_calendar_service():
+    """Get Google Calendar service using Application Default Credentials"""
+    try:
+        import google.auth
+        from googleapiclient.discovery import build
+        credentials, project = google.auth.default(
+            scopes=['https://www.googleapis.com/auth/calendar']
+        )
+        service = build('calendar', 'v3', credentials=credentials)
+        return service
+    except Exception as e:
+        logger.error(f"Failed to initialize Calendar service: {str(e)}")
+        return None
+# Create the main app
+app = FastAPI()
+
+# Create a router with the /api prefix
+api_router = APIRouter(prefix="/api")
 
 
 # Define Models
@@ -79,21 +98,6 @@ class AppointmentResponse(BaseModel):
     notes: Optional[str]
     created_at: str
     calendar_event_id: Optional[str] = None
-
-
-# Helper function to get Google Calendar service using service account
-def get_calendar_service():
-    """Get Google Calendar service using Application Default Credentials (service account)"""
-    try:
-        # Use ADC - in Cloud Run this automatically uses the assigned service account
-        credentials, project = google.auth.default(
-            scopes=['https://www.googleapis.com/auth/calendar']
-        )
-        service = build('calendar', 'v3', credentials=credentials)
-        return service
-    except Exception as e:
-        logger.error(f"Failed to initialize Calendar service: {str(e)}")
-        return None
 
 
 async def create_calendar_event(appointment: dict) -> Optional[str]:
@@ -191,8 +195,13 @@ async def submit_contact(form: ContactForm):
         "status": "new"
     }
     
-    db.collection('contacts').document(contact_id).set(doc_data)
-    logger.info(f"Contact saved: {contact_id}")
+    try:
+        db = get_db()
+        db.collection('contacts').document(contact_id).set(doc_data)
+        logger.info(f"Contact saved: {contact_id}")
+    except Exception as e:
+        logger.error(f"Failed to save contact: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al guardar el mensaje")
     
     return ContactResponse(
         id=contact_id,
@@ -222,14 +231,23 @@ async def create_appointment(appointment: AppointmentCreate):
         "status": "confirmed"
     }
     
-    # Create Google Calendar event
-    calendar_event_id = await create_calendar_event(apt_data)
-    if calendar_event_id:
-        apt_data["calendar_event_id"] = calendar_event_id
+    # Create Google Calendar event (don't fail if calendar fails)
+    calendar_event_id = None
+    try:
+        calendar_event_id = await create_calendar_event(apt_data)
+        if calendar_event_id:
+            apt_data["calendar_event_id"] = calendar_event_id
+    except Exception as e:
+        logger.error(f"Calendar event creation failed: {str(e)}")
     
     # Save to Firestore
-    db.collection('appointments').document(apt_id).set(apt_data)
-    logger.info(f"Appointment created: {apt_id}, calendar_event: {calendar_event_id}")
+    try:
+        db = get_db()
+        db.collection('appointments').document(apt_id).set(apt_data)
+        logger.info(f"Appointment created: {apt_id}, calendar_event: {calendar_event_id}")
+    except Exception as e:
+        logger.error(f"Failed to save appointment: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error al guardar la cita")
     
     return AppointmentResponse(
         id=apt_id,
@@ -249,9 +267,14 @@ async def create_appointment(appointment: AppointmentCreate):
 @api_router.get("/appointments/available-times")
 async def get_available_times(date: str):
     """Get available time slots for a specific date"""
-    # Get booked appointments for the date
-    appointments = db.collection('appointments').where('date', '==', date).stream()
-    booked_times = [apt.to_dict().get('time') for apt in appointments]
+    try:
+        db = get_db()
+        # Get booked appointments for the date
+        appointments = db.collection('appointments').where('date', '==', date).stream()
+        booked_times = [apt.to_dict().get('time') for apt in appointments]
+    except Exception as e:
+        logger.error(f"Failed to get appointments: {str(e)}")
+        booked_times = []
     
     # Define all possible time slots
     all_times = [
