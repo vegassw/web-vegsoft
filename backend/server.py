@@ -17,6 +17,7 @@ load_dotenv(ROOT_DIR / '.env')
 
 # Firestore connection - uses Application Default Credentials (ADC)
 # In Cloud Run, ADC automatically uses the service account assigned to the service
+# Last updated: 2026-03-13
 PROJECT_ID = os.environ.get('GOOGLE_CLOUD_PROJECT', 'vegsoft-solutions-prod')
 db = firestore.Client(project=PROJECT_ID, database='vegsoft-site')
 
